@@ -1,0 +1,225 @@
+<!DOCTYPE html><!--声明HTML文件-->
+<html ondragstart="return false"><!--网页的开始-->
+    <head><!--给浏览器看的信息-->
+        <title>Examples</title>
+        <meta charset="UTF-8"><!--编码格式为国际编码UTF-8-->
+        <meta name="Author" content="老先生"><!-- 作者 -->
+        <meta name="keywords" content=""><!--为搜索引擎提供关键字列表-->
+        <meta name="description" content=""><!--对网页的描述，给搜索引擎抓取-->
+        <style type="text/css">
+            body, p, ul, dl, dd, ol, h1, h2, h3, h5, h5, h6{ margin:0;}
+            ul,ol{ padding-left:0;list-style:none;}
+            body{font-size: 12px; font-family:"PingFang SC";}
+            a{text-decoration: none; color: #999;}
+            img{vertical-align: middle;}
+            body{
+                background-color: #ccc;
+            }
+           #box{
+                position: relative;
+                float: left;
+                overflow: hidden;
+                width: 600px;
+                height: 450px;
+                margin: 50px;
+                background: url("timg.jpg") left top/cover;
+            }
+            #show{
+                position: relative;
+                top:50px;
+                left:700px;
+                width: 120px;
+                height: 90px;
+                background-image: url("timg.jpg");
+                background-repeat: no-repeat;
+                background-position: 5px -12px;
+            }
+            #drag{
+                position: absolute;
+                top:0;
+                left:0;
+                width: 120px;
+                height: 90px;
+                border: 2px dashed #fff;
+                cursor: pointer;
+                background:linear-gradient(to top,transparent 30px,transparent,#fff,#fff 31px),
+                           linear-gradient(to left,transparent 30px,transparent,#fff,#fff 31px);
+                background-size: 31px 31px; 
+                box-shadow: 0 0 0 600px rgba(10,10,10,.5) ; 
+            }
+            #drag span{
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                background-color: #fff;
+                border-radius: 50%;
+            }
+            #dot1{
+                top: -5px;
+                left: -5px;
+                cursor: se-resize;
+            }
+            #dot2{
+                top:-5px;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+                cursor: n-resize;
+            }
+            #dot3{
+                right: -5px;
+                top: -5px;
+                cursor: sw-resize;
+            }
+            #dot4{
+                top: 0;
+                bottom: 0;
+                right: -5px;
+                margin: auto 0;
+                cursor: w-resize;
+            }
+            #dot5{
+                bottom: -5px;
+                right: -5px;
+                margin:0 auto;
+                cursor: se-resize;
+            }
+            #dot6{
+                bottom: -5px;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+                cursor: n-resize;
+            }
+            #dot7{
+                bottom: -5px;
+                left: -5px;
+                margin: auto;
+                cursor: sw-resize;
+            }
+            #dot8{
+                top: 0;
+                bottom: 0;
+                left: -5px;
+                margin: auto;
+                cursor: w-resize;
+            }
+        </style>
+    </head>
+    <body><!--可视化区域-->
+        <div id="box">
+            <div id="drag">
+                <span id="dot1"></span>
+                <span id="dot2"></span>
+                <span id="dot3"></span>
+                <span id="dot4"></span>
+                <span id="dot5"></span>
+                <span id="dot6"></span>
+                <span id="dot7"></span>
+                <span id="dot8"></span>
+            </div>
+        </div>
+        <div id="show"></div>
+        <script type="text/javascript">
+            document.onmousedown = function(e){
+                e = e || window.event;
+                var oThat = e.target || e.srcElement,
+                    oDownX = e.clientX,
+                    oDownY = e.clientY,
+                    oDragTop = drag.offsetTop,
+                    oDragLeft = drag.offsetLeft,
+                    oDragWidth = drag.clientWidth,
+                    oDragHeight = drag.clientHeight,
+                    oShowHeight = show.clientHeight,
+                    oShowWidth = show.clientWidth,
+                    oDownMaxX = box.clientWidth - drag.clientWidth,
+                    oDownMaxY = box.clientHeight - drag.clientHeight;
+                document.onmousemove = function(e){
+                    e = e || window.evrnt;
+                    var X_ = e.clientX - oDownX,
+                        Y_ = e.clientY - oDownY;
+                    switch(oThat.id){
+                        case "drag":
+                            oLeft = X_ + oDragLeft,
+                            oTop = Y_ + oDragTop;
+                            if(oTop <= 0 || oTop >= oDownMaxY){
+                                oTop = Math.max(0,oTop);
+                                oTop = Math.min(oDownMaxY,oTop);
+                            }
+
+                            if(oLeft <=0 || oLeft >= oDownMaxX){
+                                oLeft = Math.max(0,oLeft);
+                                oLeft = Math.min(oDownMaxX,oLeft);
+                            }
+                            oThat.style.left = oLeft + "px";
+                            oThat.style.top = oTop + "px";
+                            show.style.backgroundPositionX = -(oLeft) * 1.25 + "px";
+                            show.style.backgroundPositionY = -(oTop) * 1.2 + "px";
+                            break;
+                        case "dot1":
+                            X_ = Math.min(X_,oDragWidth - 120);
+                            Y_ = Math.min(Y_,oDragHeight-90);
+                            drag.style.height = oDragHeight -  Y_ + "px";
+                            drag.style.top = oDragTop + Y_ + "px";
+                            drag.style.width = oDragWidth - X_ + "px";
+                            drag.style.left = oDragLeft + X_ + "px";
+
+                            show.style.width = -(oShowWidth +X_) +"px";
+                            show.style.height = oShowHeight -Y_ +"px";
+                            break;
+                        case "dot2":
+                            Y_ = Math.min(Y_,oDragHeight-90);
+                            drag.style.height = oDragHeight -  Y_ + "px";
+                            drag.style.top = oDragTop + Y_ + "px";
+                            show.style.height = oShowHeight -Y_ +"px";
+                            break;
+                        case "dot3":
+                            X_ = Math.max(X_,-(oDragWidth - 120));
+                            Y_ = Math.min(Y_,oDragHeight-90);
+                            drag.style.height = oDragHeight -  Y_ + "px";
+                            drag.style.top = oDragTop + Y_ + "px";
+                            drag.style.width = oDragWidth + X_ + "px";
+                            break;
+                        case "dot4":
+                            X_ = Math.max(X_,-(oDragWidth - 120));
+                            drag.style.width = oDragWidth + X_ + "px";
+                            show.style.width = oShowWidth + X_ +"px";
+                            break;
+                        case "dot5":
+                            X_ = Math.max(X_,-(oDragWidth - 120));
+                            Y_ = Math.max(Y_,-(oDragHeight - 90));
+                            drag.style.height = oDragHeight + Y_ + "px";
+                            drag.style.width = oDragWidth + X_ + "px";
+
+                            show.style.width = oShowWidth + X_ +"px";
+                            show.style.height = oShowHeight + Y_ +"px";
+                            break;
+                        case "dot6":
+                            Y_ = Math.max(Y_,-(oDragHeight - 90));
+                            drag.style.height = oDragHeight + Y_ + "px";
+                            show.style.height = oShowHeight + Y_ +"px";
+                            break;
+                        case "dot7":
+                            X_ = Math.min(X_,oDragWidth - 120);
+                            Y_ = Math.max(Y_,-(oDragHeight - 90));
+                            drag.style.height = oDragHeight + Y_ + "px";
+                            drag.style.width = oDragWidth - X_ + "px";
+                            drag.style.left = oDragLeft + X_ + "px";
+                            break;
+                        case "dot8":
+                            X_ = Math.min(X_,oDragWidth - 120);
+                            drag.style.width = oDragWidth - X_ + "px";
+                            drag.style.left = oDragLeft + X_ + "px";
+                            show.style.width = -(oShowWidth +X_) +"px";
+                            break;
+                    }
+                }
+            }
+
+            document.onmouseup = function(){
+                this.onmousemove = null;
+            }
+        </script>
+    </body><!--网页的结束-->
+</html>
+ 
